@@ -121,6 +121,8 @@
   table.lit th { background: none !important; color: #1f2522 !important; border: none !important; border-bottom: 1.5px solid #1f2522 !important; padding: 9px 10px; }
   table.lit td { background: none !important; border: none !important; border-bottom: 1px solid #d3d9d5 !important; padding: 9px 10px; }
   table.lit tr:last-child td { border-bottom: none !important; }
+  .done li::marker { content: "✓  "; color: var(--green); font-weight: 700; }
+  .next li::marker { content: "→  "; color: #d9734f; font-weight: 700; }
   /* Tools */
   .tools { display: grid; grid-template-columns: 1fr 1fr; column-gap: 56px; }
   .tools div { display: flex; padding: 11px 0; border-bottom: 1px solid #d5dcd8; font-size: 21px; }
@@ -408,13 +410,13 @@
       <h3>What's still missing</h3>
       <div class="it"><span class="n">01</span><span>Almost nobody checks whether the model has already seen the test data.</span></div>
       <div class="it"><span class="n">02</span><span>Good results are credited to the model's "knowledge" without proof.</span></div>
-      <div class="it"><span class="n">03</span><span>Results under MNAR don't agree from one paper to the next.</span></div>
+      <div class="it"><span class="n">03</span><span>Some papers report the biggest LLM gains under MNAR; the most careful study found them inconsistent.</span></div>
       <div class="it"><span class="n">04</span><span>Tests use small, famous datasets with only a few repeat runs.</span></div>
     </div>
   </div>
   <aside class="notes">
     <p>After reading all nine papers, this is our takeaway. On the good side: LLMs clearly help, small models are enough, examples help, and column names carry a lot of the signal.</p>
-    <p>On the other side: eight of the nine papers never check for memorisation, even though several say their results come from "prior knowledge". And the MNAR results contradict each other. CRILM and LLM-Forest say LLMs shine under MNAR; Abate et al., with stricter testing, found it inconsistent.</p>
+    <p>On the other side: eight of the nine papers never check for memorisation, even though several say their results come from "prior knowledge". And the MNAR picture isn't settled. CRILM and LLM-Forest report their biggest gains under MNAR, around 10 points. Abate et al., with stricter testing, found MNAR results inconsistent; on binary columns plain median/mode was actually best.</p>
   </aside>
 </section>
 
@@ -1129,10 +1131,10 @@ bc.head()</pre></div><div class="cell"><span class="pr o">[7]:</span><div class=
 <!-- 20 PROTOCOL -->
 <section class="slide c">
   <h2>Performance Evaluation <small>(Contd.)</small></h2>
-  <div class="row" style="gap:60px">
+  <div class="row" style="gap:50px">
     <div style="flex:1">
       <h3>How we'll test</h3>
-      <ul class="ts">
+      <ul class="ts" style="font-size:20px">
         <li>Baselines: mean, median, k-NN, MICE, MissForest</li>
         <li>5 LLMs, each with 3 prompting styles (no examples, 4 examples, step by step)</li>
         <li>Every setting repeated with different random seeds</li>
@@ -1140,17 +1142,26 @@ bc.head()</pre></div><div class="cell"><span class="pr o">[7]:</span><div class=
       </ul>
     </div>
     <div style="flex:1">
-      <h3>Where we are</h3>
-      <ul class="ts">
-        <li>No results yet. Experiments start after this review.</li>
-        <li>Train/test split and number of seeds will be fixed during implementation.</li>
-        <li>All numbers in these slides come from the published papers.</li>
+      <h3>Work done so far</h3>
+      <ul class="ts done" style="font-size:20px">
+        <li>Reviewed 9 recent papers and found the research gap</li>
+        <li>Designed the benchmark: 9 versions, shared masks and the three formulas</li>
+        <li>Designed the algorithm and system architecture</li>
+        <li>Selected the datasets and verified their sources</li>
+        <li>Chose free, local tools and models</li>
+      </ul>
+      <h3 style="margin-top:18px">Next steps</h3>
+      <ul class="ts next" style="font-size:20px">
+        <li>Build the pipeline and run the memorisation tests</li>
+        <li>Run the experiments; fix the train/test split and seeds</li>
+        <li>Analyse the results and release the code</li>
       </ul>
     </div>
   </div>
+  <p class="foot" style="position:absolute; left:72px; bottom:20px; margin:0">All numbers shown in this presentation come from the published papers.</p>
   <aside class="notes">
-    <p>We don't have results yet; this review is about the design.</p>
-    <p>Because every method sees the same hidden cells, we compare them in pairs. We'll make a lot of comparisons, so we correct for that with Holm–Bonferroni, and we report effect sizes so it's clear whether a difference actually matters.</p>
+    <p>On the left is how we will test. Every method sees the same hidden cells, so we compare them in pairs. We make a lot of comparisons, so we correct with Holm–Bonferroni, and we report effect sizes so it's clear whether a difference actually matters.</p>
+    <p>On the right is where we stand. So far we have done the research and design work: the literature review, the benchmark design, the algorithm and architecture, and the choice of datasets and tools. The next phase is building it and running the experiments, so we don't have results to show yet.</p>
   </aside>
 </section>
 
