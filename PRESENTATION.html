@@ -217,7 +217,7 @@
     <div style="flex:0 0 430px">
       <ul class="ts" style="font-size:21px">
         <li>With LLMs, a row is written out as text and the model guesses the missing value, roughly the way a person would.</li>
-        <li>Papers report good results for filling gaps [1, 2, 5], building cleaning workflows [3] and spotting errors [9].</li>
+        <li>Papers report good results for filling gaps [1, 2, 5], building cleaning workflows [3] and other data preparation tasks [6].</li>
         <li>But most of these tests use famous datasets like Iris, Pima and Adult.</li>
         <li>LLMs can recite many of these datasets from memory [4].</li>
         <li><b>So did the model understand the data, or just remember it?</b></li>
@@ -353,7 +353,7 @@
     <tr><td>Abate et al. (2026)</td><td>Constrained Conditional LLM-based Imputation via Iterative Chained Updates</td><td>MICE-style loop where an LLM fills one value at a time (Gemma2-9B)</td><td>Small but significant gain over MICE</td><td>Pima, DiaBD</td><td>Pattern Recognition Letters</td></tr>
     <tr><td>Li et al. (2025)</td><td>AutoDCWorkflow: LLM-based Data Cleaning Workflow Auto-Generation and Benchmark</td><td>LLM agent writes step-by-step cleaning workflows (Llama 3.1 8B, Gemma 2)</td><td>Answer F1 went from 0.22 to 0.63</td><td>Hospital, Flights and 4 more</td><td>Findings of EMNLP 2025</td></tr>
   </table>
-  <div class="cap"><b>Table 3:</b> Summary of reviewed papers (1 of 3)</div>
+  <div class="cap"><b>Table 3:</b> Summary of reviewed papers (1 of 2)</div>
   <aside class="notes">
     <p>CRILM, the figure we saw earlier: up to 10 points better under MNAR, but only on classic UCI datasets.</p>
     <p>Abate et al. swap the regression inside MICE for an LLM. They're careful with statistics and use Pima's real missing values. The gain is real but small, about 1 to 2.5 points.</p>
@@ -370,28 +370,11 @@
     <tr><td>He et al. (2025)</td><td>LLM-Forest: Ensemble Learning of LLMs with Graph-Augmented Prompts for Data Imputation</td><td>Asks GPT-4o several times with similar rows and takes a vote</td><td>Best on 8 of 9 datasets; biggest gain under MNAR</td><td>9 UCI / Kaggle datasets</td><td>Findings of ACL 2025</td></tr>
     <tr><td>Zhang et al. (2024)</td><td>Jellyfish: Instruction-Tuning Local Large Language Models for Data Preprocessing</td><td>Fine-tunes small local LLMs (7B to 13B) for cleaning tasks</td><td>13B model slightly beats GPT-4 on average (86.0 vs 84.2)</td><td>Adult, Hospital, Buy, Restaurant</td><td>EMNLP 2024</td></tr>
   </table>
-  <div class="cap"><b>Table 4:</b> Summary of reviewed papers (2 of 3)</div>
+  <div class="cap"><b>Table 4:</b> Summary of reviewed papers (2 of 2)</div>
   <aside class="notes">
     <p>Bordt et al. is the paper that started our idea. They asked GPT-4 to continue the Iris file and it got 125 of 136 rows right. When they changed the values slightly, accuracy dropped by about 6 points on famous datasets, but not on new ones. We'll use their tool, tabmemcheck.</p>
     <p>LLM-Forest asks the model several times and votes. Its biggest win is under MNAR, which is exactly what we want to double-check.</p>
     <p>Jellyfish shows small local models can be as good as GPT-4 after fine-tuning.</p>
-  </aside>
-</section>
-
-<!-- 9 LIT 3 -->
-<section class="slide c">
-  <h2>Literature Review <small>(Contd.)</small></h2>
-  <table class="pp lit">
-    <tr><th style="width:12%">Author &amp; Year</th><th style="width:22%">Title</th><th style="width:22%">Technique &amp; Model Used</th><th style="width:19%">Remark</th><th style="width:13%">Dataset</th><th style="width:12%">Source of Publication</th></tr>
-    <tr><td>Qian et al. (2024)</td><td>UniDM: A Unified Framework for Data Manipulation with Large Language Models</td><td>Picks useful rows and columns automatically, turns them into sentences for GPT-3</td><td>93% accuracy on Restaurant, 98.5% on Buy</td><td>Restaurant, Buy, Hospital, Adult</td><td>MLSys 2024</td></tr>
-    <tr><td>Wang et al. (2025)</td><td>On LLM-Enhanced Mixed-Type Data Imputation with High-Order Message Passing</td><td>Uses Llama2-7B features inside a graph network (UnIMP)</td><td>About 28% lower error than MICE; plain prompting was worse than MICE on numbers</td><td>10 UCI / Kaggle datasets</td><td>PVLDB 2025</td></tr>
-    <tr><td>Ni et al. (2025)</td><td>ZeroED: Hybrid Zero-shot Error Detection through Large Language Model Reasoning</td><td>LLM writes error-checking rules and labels; a small classifier learns from them</td><td>F1 of 0.72 to 0.81, against 0.67 or less for plain prompting</td><td>Hospital, Flights, Beers and more</td><td>IEEE ICDE 2025</td></tr>
-  </table>
-  <div class="cap"><b>Table 5:</b> Summary of reviewed papers (3 of 3)</div>
-  <aside class="notes">
-    <p>UniDM rewrites rows as sentences so they look like the text the model was trained on. That's basically trying to trigger the model's memory, which is interesting for us.</p>
-    <p>UnIMP is important because it found plain LLM prompting does worse than MICE on numeric data. So LLMs don't always win.</p>
-    <p>ZeroED uses an LLM to write rules for spotting errors. Even an 8B model did well.</p>
   </aside>
 </section>
 
@@ -415,8 +398,8 @@
     </div>
   </div>
   <aside class="notes">
-    <p>After reading all nine papers, this is our takeaway. On the good side: LLMs clearly help, small models are enough, examples help, and column names carry a lot of the signal.</p>
-    <p>On the other side: eight of the nine papers never check for memorisation, even though several say their results come from "prior knowledge". And the MNAR picture isn't settled. CRILM and LLM-Forest report their biggest gains under MNAR, around 10 points. Abate et al., with stricter testing, found MNAR results inconsistent; on binary columns plain median/mode was actually best.</p>
+    <p>After reading all six papers, this is our takeaway. On the good side: LLMs clearly help, small models are enough, examples help, and column names carry a lot of the signal.</p>
+    <p>On the other side: five of the six papers never check for memorisation, even though several say their results come from "prior knowledge". And the MNAR picture isn't settled. CRILM and LLM-Forest report their biggest gains under MNAR, around 10 points. Abate et al., with stricter testing, found MNAR results inconsistent; on binary columns plain median/mode was actually best.</p>
   </aside>
 </section>
 
@@ -1118,7 +1101,7 @@ bc.head()</pre></div><div class="cell"><span class="pr o">[7]:</span><div class=
     <tr><td>Usefulness</td><td>Accuracy of random forest, gradient boosting and logistic regression trained on the cleaned data</td></tr>
     <tr><td>Cost</td><td>Model calls, tokens, time and invalid answers</td></tr>
   </table>
-  <div class="cap"><b>Table 6:</b> Evaluation metrics</div>
+  <div class="cap"><b>Table 5:</b> Evaluation metrics</div>
   <div class="eqline">NRMSE = <span style="font-size:1.1em">√</span>( <sup>1</sup>&frasl;<sub><i>n</i></sub> Σ (<i>x̂</i><sub><i>i</i></sub> − <i>x</i><sub><i>i</i></sub>)² ) / <i>s</i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MAE = <sup>1</sup>&frasl;<sub><i>n</i></sub> Σ |<i>x̂</i><sub><i>i</i></sub> − <i>x</i><sub><i>i</i></sub>|</div>
   <p class="foot">* <i>x̂<sub>i</sub></i> = value filled in by the method, <i>x<sub>i</sub></i> = true value, <i>n</i> = number of hidden cells, <i>s</i> = spread of the column (range or standard deviation, to be fixed during implementation).</p>
   <aside class="notes">
@@ -1144,7 +1127,7 @@ bc.head()</pre></div><div class="cell"><span class="pr o">[7]:</span><div class=
     <div style="flex:1">
       <h3>Work done so far</h3>
       <ul class="ts done" style="font-size:20px">
-        <li>Reviewed 9 recent papers and found the research gap</li>
+        <li>Reviewed 6 recent papers and found the research gap</li>
         <li>Designed the benchmark: 9 versions, shared masks and the three formulas</li>
         <li>Designed the algorithm and system architecture</li>
         <li>Selected the datasets and verified their sources</li>
@@ -1175,17 +1158,14 @@ bc.head()</pre></div><div class="cell"><span class="pr o">[7]:</span><div class=
     <li><a class="ref" href="https://arxiv.org/abs/2404.06209" target="_blank" rel="noopener">S. Bordt, H. Nori, V. Rodrigues, B. Nushi and R. Caruana, "Elephants Never Forget: Memorization and Learning of Tabular Data in Large Language Models," COLM, 2024.</a></li>
     <li><a class="ref" href="https://aclanthology.org/2025.findings-acl.361/" target="_blank" rel="noopener">X. He, Y. Ban, J. Zou, T. Wei, C. Cook and J. He, "LLM-Forest: Ensemble Learning of LLMs with Graph-Augmented Prompts for Data Imputation," Findings of ACL, pp. 6921–6936, 2025.</a></li>
     <li><a class="ref" href="https://aclanthology.org/2024.emnlp-main.497/" target="_blank" rel="noopener">H. Zhang, Y. Dong, C. Xiao and M. Oyamada, "Jellyfish: Instruction-Tuning Local Large Language Models for Data Preprocessing," EMNLP, 2024.</a></li>
-    <li><a class="ref" href="https://proceedings.mlsys.org/paper_files/paper/2024/hash/dcb38c6ad7911842ab31081be9540b89-Abstract-Conference.html" target="_blank" rel="noopener">Y. Qian et al., "UniDM: A Unified Framework for Data Manipulation with Large Language Models," MLSys, 2024.</a></li>
-    <li><a class="ref" href="https://doi.org/10.14778/3748191.3748205" target="_blank" rel="noopener">J. Wang, K. Wang, Y. Zhang, W. Zhang, X. Xu and X. Lin, "On LLM-Enhanced Mixed-Type Data Imputation with High-Order Message Passing," PVLDB, vol. 18, no. 10, pp. 3421–3434, 2025.</a></li>
-    <li><a class="ref" href="https://arxiv.org/abs/2504.05345" target="_blank" rel="noopener">W. Ni et al., "ZeroED: Hybrid Zero-shot Error Detection through Large Language Model Reasoning," IEEE ICDE, pp. 3126–3139, 2025.</a></li>
   </ol>
-  <aside class="notes"><p>These are the nine papers we reviewed. Dataset sources are on the next slide.</p></aside>
+  <aside class="notes"><p>These are the six papers we reviewed. Dataset sources are on the next slide.</p></aside>
 </section>
 
 <!-- 22 REFERENCES CONTD -->
 <section class="slide c">
   <h2>References <small>(Contd.)</small></h2>
-  <ol class="refs" start="10" style="font-size:19px">
+  <ol class="refs" start="7" style="font-size:19px">
     <li><a class="ref" href="https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database" target="_blank" rel="noopener">J. W. Smith et al., "Using the ADAP Learning Algorithm to Forecast the Onset of Diabetes Mellitus," Proc. Symposium on Computer Applications and Medical Care, pp. 261–265, 1988. Pima Indians Diabetes Database, Kaggle.</a></li>
     <li><a class="ref" href="https://data.mendeley.com/datasets/m8cgwxs9s6/2" target="_blank" rel="noopener">T. T. Prama, M. J. Rahman, M. Zaman, F. Sarker and K. A. Mamun, "DiaBD: A Diabetes Dataset for Enhanced Risk Analysis and Research in Bangladesh," Data in Brief, vol. 61, 111746, 2025. Mendeley Data, V2.</a></li>
     <li><a class="ref" href="https://archive.ics.uci.edu/dataset/53/iris" target="_blank" rel="noopener">R. A. Fisher, "Iris," UCI Machine Learning Repository, 1936.</a></li>
